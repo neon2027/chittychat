@@ -1,3 +1,4 @@
+@use(\Carbon\Carbon)
 <div>
     <div class="px-6 flex justify-between items-center">
         <div>
@@ -12,82 +13,66 @@
     </div>
     <div class="mt-6  bg-white rounded-lg shadow-sm  relative  ">
         <div class="p-6 space-y-4 h-[calc(100vh-300px)] overflow-auto pb-16" id="messages">
-            @forelse ($room->messages as $message)
-                @if (in_array($message->type, ['join', 'leave']))
-                    <div class="text-center text-gray-500">
-                        <span class="text-xs">{{ $message->content }}</span>
-                    </div>
-                    @continue
-                @endif
-                <div @class([
-                    'flex gap-4',
-                    'justify-end' => $message->user_id === auth()->id(),
-                    'justify-start' => $message->user_id !== auth()->id(),
-                ])>
-                    <div class="flex gap-2">
-                        @if ($message->user_id !== auth()->id())
-                            <img src="{{ 'https://ui-avatars.com/api/?name=' . $message->user->name . '&background=random&rounded=true' }}"
-                                alt="{{ $message->user->name }}" class="w-8 h-8 rounded-full">
-                        @endif
-                        <div>
-                            @if ($message->user_id !== auth()->id())
-                                <span class="font-medium text-xs">{{ $message->user->name }}</span>
+            @forelse ($messages as $time => $timeMessage)
+                <div class="text-center font-bold text-xs text-gray-500">
+                    {{ Carbon::parse($time)->format('h:i A') }}
+                </div>
+                @foreach ($timeMessage as $m)
+                    @if (in_array($m->type, ['join', 'leave']))
+                        <div class="text-center text-gray-500">
+                            <span class="text-xs">{{ $m->content }}</span>
+                        </div>
+                        @continue
+                    @endif
+                    <div @class([
+                        'flex gap-4',
+                        'justify-end' => $m->user_id === auth()->id(),
+                        'justify-start' => $m->user_id !== auth()->id(),
+                    ])>
+                        <div class="flex gap-2">
+                            @if ($m->user_id !== auth()->id())
+                                <img src="{{ 'https://ui-avatars.com/api/?name=' . $m->user->name . '&background=random&rounded=true' }}"
+                                    alt="{{ $m->user->name }}" class="w-8 h-8 rounded-full">
                             @endif
-                            <div @class([
-                                'flex items-center  gap-4 group',
-                                'justify-end' => $message->user_id === auth()->id(),
-                                'justify-start' => $message->user_id !== auth()->id(),
-                            ])>
-                                @if ($message->user_id === auth()->id())
-                                    <div class="group-hover:block hidden">
-                                        <button>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                            <div x-data="{ showTimestamp: false }">
+                                @if ($m->user_id !== auth()->id())
+                                    <span class="font-medium text-xs">{{ $m->user->name }}</span>
                                 @endif
                                 <div @class([
-                                    'px-2 py-1  rounded-lg',
-                                    'bg-blue-500  text-white' => $message->user_id === auth()->id(),
-                                    'bg-gray-200 text-gray-700' => $message->user_id !== auth()->id(),
+                                    'flex items-center  gap-4 group',
+                                    'justify-end' => $m->user_id === auth()->id(),
+                                    'justify-start' => $m->user_id !== auth()->id(),
                                 ])>
-                                    <div class="text-sm max-w-md">
-                                        <p>{{ $message->content }}</p>
+                                    <div @class([
+                                        'px-2 py-1  rounded-lg',
+                                        'bg-blue-500  text-white' => $m->user_id === auth()->id(),
+                                        'bg-gray-200 text-gray-700' => $m->user_id !== auth()->id(),
+                                    ]) @mouseenter="showTimestamp = true"
+                                        @mouseleave="showTimestamp = false">
+                                        <div class="text-sm max-w-md">
+                                            <p>{{ $m->content }}</p>
+                                        </div>
                                     </div>
                                 </div>
-                                @if ($message->user_id !== auth()->id())
-                                    <div class="group-hover:block hidden">
-                                        <button>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                @endif
+                                <div @class([
+                                    'text-start' => $m->user_id !== auth()->id(),
+                                    'text-end' => $m->user_id === auth()->id(),
+                                ])>
+                                    <span class="text-xs text-gray-500" x-show="showTimestamp" x-transition>
+                                        Delivered {{ $m->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
                             </div>
-                            <div @class([
-                                'text-start' => $message->user_id !== auth()->id(),
-                                'text-end' => $message->user_id === auth()->id(),
-                            ])>
-                                <span class="text-xs text-gray-500">
-                                    {{ $message->created_at->diffForHumans() }}
-                                </span>
-                            </div>
-                        </div>
-                        @if ($message->user_id === auth()->id())
-                            <img src="{{ 'https://ui-avatars.com/api/?name=' . $message->user->name . '&background=random&rounded=true' }}"
-                                alt="{{ $message->user->name }}" class="w-8 h-8 rounded-full">
-                        @endif
+                            @if ($m->user_id === auth()->id())
+                                <img src="{{ 'https://ui-avatars.com/api/?name=' . $m->user->name . '&background=random&rounded=true' }}"
+                                    alt="{{ $m->user->name }}" class="w-8 h-8 rounded-full">
+                            @endif
 
+                        </div>
                     </div>
-                </div>
+                @endforeach
             @empty
-                <div class="text-center text-gray-500">No messages yet</div>
+                <div class="text-center text-gray-500 text-xs">No messages yet</div>
             @endforelse
         </div>
         <div class=" w-full end-0 bottom-0 bg-gradient-to-t from-white to-transparent ">

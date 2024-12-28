@@ -25,6 +25,8 @@ class Login extends Component
         if(auth()->attempt(['email' => $this->email, 'password' => $this->password])) {
             return to_route('chat');
         }
+
+        $this->addError('email', 'Invalid credentials');
     }
 
 

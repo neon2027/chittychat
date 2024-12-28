@@ -8,17 +8,32 @@
     <title>Document</title>
     @filamentScripts
     @vite(['resources\js\app.js', 'resources\css\app.css'])
+    <style>
+        [x-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
     <nav class="bg-white p-4">
         <div class="flex justify-between max-w-7xl mx-auto">
             <div class="">
-                <strong cl>ChittyChat</strong>
+                <a href="{{ route('chat') }}">
+                    <strong>ChittyChat</strong>
+                </a>
             </div>
             <div class="space-x-4">
-                <a href="{{ route('login') }}" class="text-blue-500" wire:navigate>Login</a>
-                <a href="#" class="text-blue-500">Register</a>
+                @guest
+                    <a href="{{ route('login') }}" class="text-blue-500" wire:navigate>Login</a>
+                    <a href="#" class="text-blue-500">Register</a>
+                @endguest
+                @auth
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <button type="submit" class="text-blue-500">Logout</button>
+                    </form>
+                @endauth
             </div>
         </div>
     </nav>

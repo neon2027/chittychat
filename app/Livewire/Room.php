@@ -3,12 +3,15 @@
 namespace App\Livewire;
 
 use App\Events\MessageEvent;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Room extends Component
 {
     public \App\Models\Room $room;
+
     public ?string $message = '';
+    public $messages = [];
 
     public function getListeners()
     {
@@ -20,6 +23,14 @@ class Room extends Component
     public function messageSent($message)
     {
         $this->room->load('messages');
+        $this->messages = $this->room->messages->groupBy(function($message) {
+            return $message->created_at->format('Y-m-d H:00');
+        })
+        ->mapWithKeys(function($group, $key) {
+            $firstMessage = $group->first();
+            $newKey = $firstMessage->created_at->format('Y-m-d H:i');
+            return [$newKey => $group];
+        });
     }
 
     public function leaveRoom()
@@ -36,6 +47,14 @@ class Room extends Component
     public function mount($id)
     {
         $this->room = \App\Models\Room::find($id);
+        $this->messages = $this->room->messages->groupBy(function($message) {
+            return $message->created_at->format('Y-m-d H:00');
+        })
+        ->mapWithKeys(function($group, $key) {
+            $firstMessage = $group->first();
+            $newKey = $firstMessage->created_at->format('Y-m-d H:i');
+            return [$newKey => $group];
+        });
     }
 
     public function render()
@@ -45,9 +64,6 @@ class Room extends Component
 
     public function sendMessage()
     {
-        $this->validate([
-            'message' => 'required'
-        ]);
 
         $message = $this->room->messages()->create([
             'user_id' => auth()->id(),
