@@ -23,7 +23,7 @@ class Login extends Component
         $this->validate();
 
         if(auth()->attempt(['email' => $this->email, 'password' => $this->password])) {
-            return redirect()->to('/dashboard');
+            return to_route('chat');
         }
     }
 

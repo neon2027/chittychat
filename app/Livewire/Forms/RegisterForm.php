@@ -32,7 +32,7 @@ class RegisterForm extends Form
 
         auth()->login($user);
 
-        return to_route('welcome');
+        return to_route('chat');
     }
 
     public function render()
