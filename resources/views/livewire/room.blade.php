@@ -6,7 +6,7 @@
             <p class="text-gray-500">{{ $room->description ?? 'No description' }}</p>
         </div>
         <div>
-            <button wire:click="leaveRoom" class="bg-red-500 text-white px-4 py-2 rounded-md">
+            <button wire:click="leaveRoom" class="bg-red-500 text-white px-2 py-2 text-xs rounded-md">
                 Leave Room
             </button>
         </div>
