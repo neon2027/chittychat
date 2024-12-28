@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ config('app.name') }}</title>
+
     @filamentScripts
-    @vite(['resources\js\app.js', 'resources\css\app.css'])
+    @vite('resources/css/app.css')
     <style>
         [x-cloak] {
             display: none;
@@ -40,6 +41,8 @@
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {{ $slot }}
     </main>
+
+    @vite('resources/js/app.js')
 </body>
 
 </html>
