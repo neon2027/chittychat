@@ -1,11 +1,11 @@
 @use(\Carbon\Carbon)
 <div>
-    <div class="px-6 flex justify-between items-center">
+    <div class="px-6 grid grid-cols-1 md:grid-cols-2 items-center">
         <div>
             <h1 class="text-2xl font-bold">Room: {{ $room->room_name }}</h1>
             <p class="text-gray-500">{{ $room->description ?? 'No description' }}</p>
         </div>
-        <div>
+        <div class="flex justify-end">
             <button wire:click="leaveRoom" class="bg-red-500 text-white px-2 py-2 text-xs rounded-md">
                 Leave Room
             </button>
