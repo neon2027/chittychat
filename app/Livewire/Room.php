@@ -67,7 +67,7 @@ class Room extends Component
 
         $message = $this->room->messages()->create([
             'user_id' => auth()->id(),
-            'content' => $this->message
+            'content' => nl2br($this->message),
         ]);
 
 

@@ -50,7 +50,7 @@
                                     ]) @mouseenter="showTimestamp = true"
                                         @mouseleave="showTimestamp = false">
                                         <div class="text-sm max-w-md">
-                                            <p>{{ $m->content }}</p>
+                                            <p>{!! $m->content !!}</p>
                                         </div>
                                     </div>
                                 </div>
