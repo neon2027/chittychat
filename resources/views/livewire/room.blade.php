@@ -94,12 +94,7 @@
     <script>
         const messages = document.getElementById('messages');
         messages.scrollTop = messages.scrollHeight;
-        $wire.on('message-sent', () => {
 
-            // Scroll to the bottom of the messages
-            messages.scrollTop = messages.scrollHeight;
-            playSound();
-        });
         Echo.private("room.{{ $room->id }}")
             .listen('MessageEvent', (e) => {
                 messages.scrollTop = messages.scrollHeight;
